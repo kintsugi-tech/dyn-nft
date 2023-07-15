@@ -17,3 +17,13 @@ cw-storage-plus = "1.0"
 cw2 = "1.0"
 cw-ownable = "0.5"
 thiserror = "1"
+badges = { git = "https://github.com/public-awesome/badges" }
+badge-nft = { git = "https://github.com/public-awesome/badges" }
+sg721-base      = "0.21"
+sg721           = "0.21"
+sg-std          = "0.21"
+sg-metadata     = "0.21"
+cw721           = "0.16"
+cw721-base      = "0.16"
+schemars        = "0.8"
+serde           = { version = "1.0", default-features = false }

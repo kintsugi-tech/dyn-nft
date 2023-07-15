@@ -1,2 +1,1 @@
-pub mod coin;
-pub mod token;
+pub mod badge_nft;
