@@ -1,17 +1,17 @@
 use std::iter::zip;
 
+use badges::nft::Extension;
 use common::badge_nft::{BadgeInfoResponse, AllBadgesInfoResponse, BadgeResponse};
 use cosmwasm_std::{DepsMut, Env, MessageInfo, Deps, StdResult, Storage, StdError};
+use cw721::Cw721Query;
 use sg721_base::ContractError;
 use sg_metadata::{Trait, Metadata};
 use sg_std::Response;
 use crate::{state::{API_URL, BADGE, ID_TO_SPECIAL_ROLE, METADATA}, msg::InstantiateMsg};
-use cw721::Cw721Query;
-
 
 #[derive(Default)]
 pub struct BadgeContract<'a> {
-    pub parent: badge_nft::contract::NftContract<'a>,
+    pub parent: sg721_base::Sg721Contract<'a, Extension>,
 }
 
 pub const CONTRACT_NAME: &str = "crates.io:badge-plus-contract";
@@ -37,7 +37,7 @@ impl<'a> BadgeContract<'a> {
 
         BADGE.save(deps.storage, &msg.badge)?;
 
-        self.parent.parent.instantiate(
+        self.parent.instantiate(
             deps,
             env,
             info,
@@ -71,7 +71,7 @@ impl<'a> BadgeContract<'a> {
         token_id: String,
         include_expired: Option<bool>,
     ) -> StdResult<AllBadgesInfoResponse> {
-        let access = self.parent.parent.parent.owner_of(
+        let access = self.parent.parent.owner_of(
             deps,
             env,
             token_id.to_string(),
