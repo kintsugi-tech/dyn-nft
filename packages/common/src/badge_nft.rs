@@ -24,7 +24,6 @@ pub type CollectionInfoResponse = sg721_base::msg::CollectionInfoResponse;
 
 #[cw_serde]
 pub struct BadgeResponse {
-
     pub manager: String,
     pub metadata: Metadata,
     pub transferrable: bool,

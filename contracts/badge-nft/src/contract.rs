@@ -29,11 +29,12 @@ impl<'a> BadgeContract<'a> {
         cw2::set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
         API_URL.save(deps.storage, &msg.api_url)?;
+        
+        let zipped: Vec<(String, &Metadata)> = msg.roles.into_iter().zip(msg.metadata.iter()).collect();
 
-        let _ = zip(msg.roles, msg.metadata).map(|(role, meta)| -> Result<(), ContractError>{
-            METADATA.save(deps.storage, role, &meta)?;
-            Ok(())
-        });
+        for (token_id, metadata) in zipped {
+            METADATA.save(deps.storage, token_id, metadata)?;
+        }
 
         BADGE.save(deps.storage, &msg.badge)?;
 
@@ -48,6 +49,15 @@ impl<'a> BadgeContract<'a> {
                 collection_info: msg.collection_info,
             },
         )
+    }
+
+    pub fn assert_transferrable(&self, deps: Deps, token_id: String) -> StdResult<()> {
+        let badge = BADGE.load(deps.storage)?;
+        if badge.transferrable {
+            Ok(())
+        } else {
+            Err(StdError::generic_err(format!("badge {} is not transferrable", token_id)))
+        }
     }
 
     pub fn nft_info(&self, deps: Deps, token_id: String) -> StdResult<BadgeInfoResponse> {
@@ -99,15 +109,6 @@ impl<'a> BadgeContract<'a> {
             current_supply: badge.current_supply
         };
         Ok(response)
-    }
-
-    pub fn assert_transferrable(&self, deps: Deps, token_id: String) -> StdResult<()> {
-        let badge = self.query_badge(deps, token_id.clone())?;
-        if badge.transferrable {
-            Ok(())
-        } else {
-            Err(StdError::generic_err(format!("badge {} is not transferrable", token_id)))
-        }
     }
 }
 

@@ -1,6 +1,7 @@
 use badges::Badge;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{StdError, StdResult};
+use sg721_base::ExecuteMsg as ExecuteMsgLegacy;
 use sg_metadata::Metadata;
 
 #[cw_serde]
@@ -21,4 +22,13 @@ impl InstantiateMsg {
             Ok(())
         }
     }
+}
+
+#[cw_serde]
+pub enum ExecuteMsg {
+    TurnMetadata {
+        token_id: String,
+        role: String
+    },
+    Legacy(ExecuteMsgLegacy)
 }
