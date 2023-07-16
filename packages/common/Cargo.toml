@@ -16,7 +16,6 @@ cw-ownable = { workspace = true }
 cw2 = {workspace = true }
 thiserror = { workspace = true }
 badges = { workspace = true } 
-badge-nft = { workspace = true }
 sg721-base = { workspace = true }
 sg721 = { workspace = true }
 sg-std = { workspace = true }

@@ -1,0 +1,2 @@
+c0f09052f93264225c7626eea38a40176919d93582d3fe5c339600cf48a294df  ./target/wasm32-unknown-unknown/release/badge_nft.wasm
+699bcf744561f3b46666f6f03a1c877fa6d5fe79d90057d96b0812ea24e5cad9  ./target/wasm32-unknown-unknown/release/factory.wasm

@@ -1,10 +1,17 @@
-use std::marker::PhantomData;
+use crate::{
+    entry::{execute, instantiate, query},
+    msg::{ExecuteMsg, InstantiateMsg},
+};
 use badges::{Badge, MintRule};
 use common::badge_nft::BadgeInfoResponse;
-use cosmwasm_std::{testing::{mock_info, mock_env, MockQuerier, MockStorage, MockApi}, Addr, WasmQuery, QuerierResult, to_binary, ContractInfoResponse, OwnedDeps, from_binary};
+use cosmwasm_std::{
+    from_binary,
+    testing::{mock_env, mock_info, MockApi, MockQuerier, MockStorage},
+    to_binary, Addr, ContractInfoResponse, OwnedDeps, QuerierResult, WasmQuery,
+};
 use sg721::CollectionInfo;
 use sg_metadata::{Metadata, Trait};
-use crate::{msg::{InstantiateMsg, ExecuteMsg}, entry::{instantiate, execute, query}};
+use std::marker::PhantomData;
 
 /// sg721 requires that the deployer must be a contract:
 /// https://github.com/public-awesome/launchpad/blob/v0.21.1/contracts/sg721-base/src/contract.rs#L39-L47
@@ -13,11 +20,9 @@ use crate::{msg::{InstantiateMsg, ExecuteMsg}, entry::{instantiate, execute, que
 /// as a valid contract, and make sure to use "badge_hub" here as the sender.
 fn wasm_querier_handler(query: &WasmQuery) -> QuerierResult {
     match query {
-        WasmQuery::ContractInfo {
-            contract_addr,
-        } if contract_addr == "factory" => {
+        WasmQuery::ContractInfo { contract_addr } if contract_addr == "factory" => {
             Ok(to_binary(&ContractInfoResponse::new(69420, "larry")).into()).into()
-        },
+        }
         _ => panic!("[mock]: unimplemented wasm query: {query:?}"),
     }
 }
@@ -50,7 +55,7 @@ fn proper_instantiate() {
         external_link: None,
         explicit_content: None,
         start_trading_time: None,
-        royalty_info: None
+        royalty_info: None,
     };
 
     let badge = Badge {
@@ -69,11 +74,10 @@ fn proper_instantiate() {
         collection_info: collection_info,
         metadata: vec![mock_metadata("default"), mock_metadata("special1")],
         roles: vec!["default".to_string(), "special1".to_string()],
-        badge: badge
+        badge: badge,
     };
 
     instantiate(deps.as_mut(), env, info, msg).unwrap();
-
 }
 
 #[test]
@@ -96,7 +100,7 @@ fn turn_metadata() {
         external_link: None,
         explicit_content: None,
         start_trading_time: None,
-        royalty_info: None
+        royalty_info: None,
     };
 
     let badge = Badge {
@@ -115,7 +119,7 @@ fn turn_metadata() {
         collection_info: collection_info,
         metadata: vec![mock_metadata("default"), mock_metadata("special1")],
         roles: vec!["default".to_string(), "special1".to_string()],
-        badge: badge
+        badge: badge,
     };
 
     instantiate(deps.as_mut(), env.clone(), info.clone(), msg).unwrap();
@@ -124,12 +128,22 @@ fn turn_metadata() {
         token_id: "primo".to_string(),
         owner: "dimi".to_string(),
         token_uri: None,
-        extension: None
+        extension: None,
     }));
 
     execute(deps.as_mut(), env.clone(), info.clone(), mint_msg).unwrap();
 
-    let res: BadgeInfoResponse = from_binary(&query(deps.as_ref(), env.clone(), sg721_base::msg::QueryMsg::NftInfo { token_id: "primo".to_string() }).unwrap()).unwrap();
+    let res: BadgeInfoResponse = from_binary(
+        &query(
+            deps.as_ref(),
+            env.clone(),
+            sg721_base::msg::QueryMsg::NftInfo {
+                token_id: "primo".to_string(),
+            },
+        )
+        .unwrap(),
+    )
+    .unwrap();
 
     let mut expected = mock_metadata("default");
     expected.attributes = Some(vec![
@@ -142,19 +156,29 @@ fn turn_metadata() {
             display_type: None,
             trait_type: "role".to_string(),
             value: "default".to_string(),
-        }
+        },
     ]);
 
     assert_eq!(res.extension, expected);
 
     let turn_metadata_msg = ExecuteMsg::TurnMetadata {
         token_id: "primo".to_string(),
-        role: "special1".to_string()
+        role: "special1".to_string(),
     };
 
     execute(deps.as_mut(), env.clone(), info, turn_metadata_msg).unwrap();
 
-    let res: BadgeInfoResponse = from_binary(&query(deps.as_ref(), env, sg721_base::msg::QueryMsg::NftInfo { token_id: "primo".to_string() }).unwrap()).unwrap();
+    let res: BadgeInfoResponse = from_binary(
+        &query(
+            deps.as_ref(),
+            env,
+            sg721_base::msg::QueryMsg::NftInfo {
+                token_id: "primo".to_string(),
+            },
+        )
+        .unwrap(),
+    )
+    .unwrap();
 
     let mut expected = mock_metadata("special1");
     expected.attributes = Some(vec![
@@ -167,9 +191,8 @@ fn turn_metadata() {
             display_type: None,
             trait_type: "role".to_string(),
             value: "special1".to_string(),
-        }
+        },
     ]);
 
     assert_eq!(res.extension, expected);
-    
 }

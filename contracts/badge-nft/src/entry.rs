@@ -1,11 +1,15 @@
+use crate::{
+    contract::BadgeContract,
+    msg::{ExecuteMsg, InstantiateMsg},
+    state::ID_TO_SPECIAL_ROLE,
+};
 use common::badge_nft::QueryMsg;
-use cosmwasm_std::{DepsMut, Env, MessageInfo, Deps, StdResult, Binary, to_binary};
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
+use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, StdResult};
 use sg721_base::ContractError;
-use sg_std::Response;
-use crate::{contract::BadgeContract, msg::{InstantiateMsg, ExecuteMsg}, state::{ID_TO_SPECIAL_ROLE, METADATA}};
 use sg721_base::ExecuteMsg as ExecuteMsgLegacy;
+use sg_std::Response;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -27,20 +31,17 @@ pub fn execute(
     let badge_nft = BadgeContract::default();
     match msg {
         ExecuteMsg::TurnMetadata { token_id, role } => turn_metadata(deps, token_id, role),
-        ExecuteMsg::Legacy (legacy_msg) => {
+        ExecuteMsg::Legacy(legacy_msg) => {
             match legacy_msg.clone() {
-                ExecuteMsgLegacy::TransferNft {
-                    token_id,
-                    ..
-                } => badge_nft.assert_transferrable(deps.as_ref(), token_id)?,
-                ExecuteMsgLegacy::SendNft {
-                    token_id,
-                    ..
-                } => badge_nft.assert_transferrable(deps.as_ref(), token_id)?,
-                ExecuteMsgLegacy::Approve {
-                    token_id,
-                    ..
-                } => badge_nft.assert_transferrable(deps.as_ref(), token_id)?,
+                ExecuteMsgLegacy::TransferNft { token_id, .. } => {
+                    badge_nft.assert_transferrable(deps.as_ref(), token_id)?
+                }
+                ExecuteMsgLegacy::SendNft { token_id, .. } => {
+                    badge_nft.assert_transferrable(deps.as_ref(), token_id)?
+                }
+                ExecuteMsgLegacy::Approve { token_id, .. } => {
+                    badge_nft.assert_transferrable(deps.as_ref(), token_id)?
+                }
                 _ => (),
             }
             badge_nft.parent.execute(deps, env, info, legacy_msg)
@@ -59,9 +60,7 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     // We implement two custom query methods: `nft_info` and `all_nft_info`.
     // For all other queries, simply dispatch them to the parent.
     match msg {
-        QueryMsg::NftInfo {
-            token_id,
-        } => to_binary(&badge_nft.nft_info(deps, token_id)?),
+        QueryMsg::NftInfo { token_id } => to_binary(&badge_nft.nft_info(deps, token_id)?),
         QueryMsg::AllNftInfo {
             token_id,
             include_expired,

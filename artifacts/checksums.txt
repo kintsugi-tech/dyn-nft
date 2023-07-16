@@ -1,0 +1,2 @@
+c98f0cac35ac361eeb3ee592ba16c90c22bccaa01f9c43ee00c33a85f582ff6a  badge_nft-aarch64.wasm
+254af0799f688f3cfdfe1a2eb1f65cc6df51020f55353f1eaffaeca3913fa1de  factory-aarch64.wasm

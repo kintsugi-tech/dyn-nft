@@ -6,7 +6,7 @@ members = ["./contracts/*", "./packages/*"]
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-authors = ["stepit <stepit@mib.tech"]
+authors = ["stepit <stepit@mib.tech", "alessandromazza98 <alessandro98.mazza@gmail.com>"]
 license-file = "./LICENSE"
 keywords = ["smart contract", "cosmwasm", "blockchain"]
 
@@ -18,7 +18,6 @@ cw2 = "1.0"
 cw-ownable = "0.5"
 thiserror = "1"
 badges = { git = "https://github.com/public-awesome/badges" }
-badge-nft = { git = "https://github.com/public-awesome/badges" }
 sg721-base      = "0.21"
 sg721           = "0.21"
 sg-std          = "0.21"

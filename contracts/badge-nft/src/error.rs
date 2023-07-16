@@ -14,5 +14,5 @@ pub enum ContractError {
     Unauthorized,
 
     #[error("roles and metadata should be of equal length")]
-    RolesMetadataMismatch {}
+    RolesMetadataMismatch {},
 }

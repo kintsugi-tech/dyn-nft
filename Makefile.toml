@@ -1,0 +1,40 @@
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+dependencies = ["clean"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+dependencies = ["clean"]
+
+[tasks.my-flow]
+dependencies = [
+    "format",
+    "build",
+    "test"
+]
+
+[tasks.optimize]
+script = """
+if [[ $(arch) == "arm64" ]]; then
+    echo "Using arm64 optimizer."
+    image="cosmwasm/rust-optimizer-arm64:0.12.11"
+else
+    echo "Using standard optimizer"
+    image="cosmwasm/rust-optimizer:0.12.11"
+fi
+docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/rust-optimizer-arm64:0.12.11
+"""

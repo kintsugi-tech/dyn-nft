@@ -11,13 +11,15 @@ pub struct InstantiateMsg {
     pub collection_info: sg721::CollectionInfo<sg721::RoyaltyInfoResponse>,
     pub metadata: Vec<Metadata>,
     pub roles: Vec<String>,
-    pub badge: Badge
+    pub badge: Badge,
 }
 
 impl InstantiateMsg {
     pub fn validate(&self) -> StdResult<()> {
         if self.metadata.len() != self.roles.len() {
-            Err(StdError::generic_err("metadata and roles should be of the same length"))
+            Err(StdError::generic_err(
+                "metadata and roles should be of the same length",
+            ))
         } else {
             Ok(())
         }
@@ -26,9 +28,6 @@ impl InstantiateMsg {
 
 #[cw_serde]
 pub enum ExecuteMsg {
-    TurnMetadata {
-        token_id: String,
-        role: String
-    },
-    Legacy(ExecuteMsgLegacy)
+    TurnMetadata { token_id: String, role: String },
+    Legacy(ExecuteMsgLegacy),
 }

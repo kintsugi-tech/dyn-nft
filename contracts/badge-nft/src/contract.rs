@@ -1,13 +1,16 @@
 use std::iter::zip;
 
+use crate::{
+    msg::InstantiateMsg,
+    state::{API_URL, BADGE, ID_TO_SPECIAL_ROLE, METADATA},
+};
 use badges::nft::Extension;
-use common::badge_nft::{BadgeInfoResponse, AllBadgesInfoResponse, BadgeResponse};
-use cosmwasm_std::{DepsMut, Env, MessageInfo, Deps, StdResult, Storage, StdError};
+use common::badge_nft::{AllBadgesInfoResponse, BadgeInfoResponse, BadgeResponse};
+use cosmwasm_std::{Deps, DepsMut, Env, MessageInfo, StdError, StdResult, Storage};
 use cw721::Cw721Query;
 use sg721_base::ContractError;
-use sg_metadata::{Trait, Metadata};
+use sg_metadata::{Metadata, Trait};
 use sg_std::Response;
-use crate::{state::{API_URL, BADGE, ID_TO_SPECIAL_ROLE, METADATA}, msg::InstantiateMsg};
 
 #[derive(Default)]
 pub struct BadgeContract<'a> {
@@ -29,8 +32,9 @@ impl<'a> BadgeContract<'a> {
         cw2::set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
         API_URL.save(deps.storage, &msg.api_url)?;
-        
-        let zipped: Vec<(String, &Metadata)> = msg.roles.into_iter().zip(msg.metadata.iter()).collect();
+
+        let zipped: Vec<(String, &Metadata)> =
+            msg.roles.into_iter().zip(msg.metadata.iter()).collect();
 
         for (token_id, metadata) in zipped {
             METADATA.save(deps.storage, token_id, metadata)?;
@@ -56,7 +60,10 @@ impl<'a> BadgeContract<'a> {
         if badge.transferrable {
             Ok(())
         } else {
-            Err(StdError::generic_err(format!("badge {} is not transferrable", token_id)))
+            Err(StdError::generic_err(format!(
+                "badge {} is not transferrable",
+                token_id
+            )))
         }
     }
 
@@ -88,10 +95,7 @@ impl<'a> BadgeContract<'a> {
             include_expired.unwrap_or(false),
         )?;
         let info = self.nft_info(deps, token_id)?;
-        Ok(AllBadgesInfoResponse {
-            access,
-            info,
-        })
+        Ok(AllBadgesInfoResponse { access, info })
     }
 
     fn query_badge(&self, deps: Deps, token_id: String) -> StdResult<BadgeResponse> {
@@ -106,7 +110,7 @@ impl<'a> BadgeContract<'a> {
             rule: badge.rule,
             expiry: badge.expiry,
             max_supply: badge.max_supply,
-            current_supply: badge.current_supply
+            current_supply: badge.current_supply,
         };
         Ok(response)
     }
@@ -128,7 +132,7 @@ pub fn prepend_traits(mut metadata: Metadata, id: impl ToString, role: impl ToSt
             display_type: None,
             trait_type: "role".to_string(),
             value: role.to_string(),
-        }
+        },
     ];
 
     traits.extend(metadata.attributes.unwrap_or_default().into_iter());
