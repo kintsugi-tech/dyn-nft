@@ -1,21 +1,8 @@
-# CosmWasm Smart Contract Workspace
+# Dynamic NFT
 
-This workspace contains multiple smart contracts written in Rust and CosmWasm.
+Dynamic NFTs (dynNFTs) are a unique type of tokens that bridge the gap between classical NFTs and badges. dynNFT are non-fungible tokens in which metadata are shared across each token like in badges. The difference here is that each collection owns different metadata and the metadata of a single NFT can be turned in a specific timespan.
 
-## Table of Contents
-
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Description](#description)
-  - [first-contract](#first-contract)
-  - [common](#common)
-- [Usage](#usage)
-  - [Test](#test)
-  - [Lint](#lint)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
+The inception of the Dynamic NFT project took place during HackWasm Berlin 2023.
 
 ## Getting Started
 
@@ -32,13 +19,13 @@ These instructions will help you get a copy of the smart contract up and running
 1. Clone the repository:
 
     ```shell
-    git clone <repository_url>
+    git clone https://github.com/kintsugi-tech/dyn-nft.git
     ```
 
 2. Change into the project directory:
 
     ```shell
-    cd <project_directory>
+    cd dyn-nft
     ```
 
 3. Build the smart contract:
@@ -49,13 +36,13 @@ These instructions will help you get a copy of the smart contract up and running
 
 ## Description
 
-### first-contract
+The project is composed of two contracts.
 
-Provide a brief description or overview of the first smart contract in the workspace.
+### Badge NFT
 
 ### common
 
-Provide a brief description or overview of the common package in the workspace.
+This package contains common types shared across the workspace's contracts.
 
 ## Usage
 
@@ -73,17 +60,21 @@ just test
 just clippy && just fmt 
 ```
 
-## Development
-
-Explain any additional setup or configuration for development purposes. Include information on the project structure and any relevant details.
-
 ## Contributing
 
-Explain how other developers can contribute to the smart contract. Include guidelines for pull requests, code style, and development practices.
+If you want to contribute to this project please, remember to run the following command before making a PR:
 
 ```shell
 just default-flow
 ```
+
+## References
+
+This project has been inspired by the following codes:
+
+- [sg721-base](https://github.com/public-awesome/launchpad/tree/main/contracts/collections/sg721-base)
+
+- [badges](https://github.com/public-awesome/badges)
 
 ## License
 
