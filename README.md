@@ -4,6 +4,10 @@ Dynamic NFTs (dynNFTs) are a unique type of tokens that bridge the gap between c
 
 The inception of the Dynamic NFT project took place during HackWasm Berlin 2023.
 
+## Spec
+
+You can find them [here](./spec/README.md)
+
 ## Getting Started
 
 These instructions will help you get a copy of the smart contract up and running on your local machine for development and testing purposes.
@@ -38,7 +42,13 @@ These instructions will help you get a copy of the smart contract up and running
 
 The project is composed of two contracts.
 
-### Badge NFT
+### Dyn-Nft
+
+This is our wrapper around sg-721, which itself is a custom implementation of cw-721.
+
+### Factory
+
+This is the factory used to instantiate collections of dyn-nfts.
 
 ### common
 
