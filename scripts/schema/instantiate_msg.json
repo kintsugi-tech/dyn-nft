@@ -1,0 +1,327 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "api_url",
+    "badge",
+    "collection_info",
+    "factory",
+    "metadata",
+    "roles"
+  ],
+  "properties": {
+    "api_url": {
+      "type": "string"
+    },
+    "badge": {
+      "$ref": "#/definitions/Badge"
+    },
+    "collection_info": {
+      "$ref": "#/definitions/CollectionInfo_for_RoyaltyInfoResponse"
+    },
+    "factory": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Metadata"
+      }
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Addr": {
+      "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+      "type": "string"
+    },
+    "Badge": {
+      "type": "object",
+      "required": [
+        "current_supply",
+        "manager",
+        "metadata",
+        "rule",
+        "transferrable"
+      ],
+      "properties": {
+        "current_supply": {
+          "description": "The current number of this badge\n\nNOTE: We don't consider that users may burn NFTs. `max_supply` refers to the maximum number of tokens that can ever be minted. A user burning their tokens does not make room for new tokens to be minted.",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "expiry": {
+          "description": "The timestamp only before which the badge can be minted",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "manager": {
+          "description": "Account who has the authority to edit the badge's info.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            }
+          ]
+        },
+        "max_supply": {
+          "description": "The maximum number of badge instances can be minted",
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "metadata": {
+          "description": "The badge's metadata",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Metadata"
+            }
+          ]
+        },
+        "rule": {
+          "description": "The rule by which instances of this badge are to be minted",
+          "allOf": [
+            {
+              "$ref": "#/definitions/MintRule"
+            }
+          ]
+        },
+        "transferrable": {
+          "description": "Whether this badge is transferrable",
+          "type": "boolean"
+        }
+      }
+    },
+    "CollectionInfo_for_RoyaltyInfoResponse": {
+      "type": "object",
+      "required": [
+        "creator",
+        "description",
+        "image"
+      ],
+      "properties": {
+        "creator": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "explicit_content": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "external_link": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "image": {
+          "type": "string"
+        },
+        "royalty_info": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/RoyaltyInfoResponse"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start_trading_time": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "Decimal": {
+      "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal(1_000_000_000_000_000_000) == 1.0\n\nThe greatest possible value that can be represented is 340282366920938463463.374607431768211455 (which is (2^128 - 1) / 10^18)",
+      "type": "string"
+    },
+    "Metadata": {
+      "description": "OpenSea metadata standard, used by Stargaze marketplace. See [this link](https://docs.opensea.io/docs/metadata-standards) for details.",
+      "type": "object",
+      "properties": {
+        "animation_url": {
+          "description": "A URL to a multi-media attachment for the item. The file extensions GLTF, GLB, WEBM, MP4, M4V, OGV, and OGG are supported, along with the audio-only extensions MP3, WAV, and OGA.\n\nAnimation_url also supports HTML pages, allowing you to build rich experiences and interactive NFTs using JavaScript canvas, WebGL, and more. Scripts and relative paths within the HTML page are now supported. However, access to browser extensions is not supported.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "attributes": {
+          "description": "These are the attributes for the item, which will show up on the OpenSea page for the item.",
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/Trait"
+          }
+        },
+        "background_color": {
+          "description": "Background color of the item on OpenSea. Must be a six-character hexadecimal without a pre-pended #.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "description": "A human readable description of the item. Markdown is supported.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_url": {
+          "description": "This is the URL that will appear below the asset's image on OpenSea and will allow users to leave OpenSea and view the item on your site.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "image": {
+          "description": "This is the URL to the image of the item. Can be just about any type of image (including SVGs, which will be cached into PNGs by OpenSea), and can be [IPFS](https://github.com/ipfs/is-ipfs) URLs or paths. We recommend using a 350 x 350 image.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "image_data": {
+          "description": "Raw SVG image data, if you want to generate images on the fly (not recommended). Only use this if you're not including the `image` parameter.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "Name of the item.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "youtube_url": {
+          "description": "A URL to a YouTube video.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "MintRule": {
+      "oneOf": [
+        {
+          "description": "Badges can be minted by a designated minter account.\n\nThe minter can either be a human doing the minting manually, or a smart contract that implements custom minting rules.",
+          "type": "object",
+          "required": [
+            "by_minter"
+          ],
+          "properties": {
+            "by_minter": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Badges can be minted upon the the signature signed by a designated private key. Provide the associated public key in hex encoding.\n\nThis key can be reused as many time as possible for minting, as long as the badge's deadline and max supply have not been reached.",
+          "type": "object",
+          "required": [
+            "by_key"
+          ],
+          "properties": {
+            "by_key": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "description": "Similar to the `ByKey` rule, but there are multiple pubkeys, each can only be used once.\n\nTo add a pubkey, use the `add_key` execute method. Keys can only be added before the minting deadline and max supply haven't been reached.\n\nOnce either the minting deadline or the max supply is reached, anyone can invoke the `clear_keys` method to remove unused keys from the contract storage, thereby reducing the size of the chain's state.",
+          "type": "string",
+          "enum": [
+            "by_keys"
+          ]
+        }
+      ]
+    },
+    "RoyaltyInfoResponse": {
+      "type": "object",
+      "required": [
+        "payment_address",
+        "share"
+      ],
+      "properties": {
+        "payment_address": {
+          "type": "string"
+        },
+        "share": {
+          "$ref": "#/definitions/Decimal"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Timestamp": {
+      "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
+      "allOf": [
+        {
+          "$ref": "#/definitions/Uint64"
+        }
+      ]
+    },
+    "Trait": {
+      "description": "An attribute of the token as defined by the [OpenSea metadata standard](https://docs.opensea.io/docs/metadata-standards#attributes).",
+      "type": "object",
+      "required": [
+        "trait_type",
+        "value"
+      ],
+      "properties": {
+        "display_type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trait_type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Uint64": {
+      "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
+      "type": "string"
+    }
+  }
+}
